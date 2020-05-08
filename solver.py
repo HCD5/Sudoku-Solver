@@ -10,47 +10,69 @@ board = [
     [0,4,9,2,0,6,0,0,7]
 ]
 
-def print_board(brd):
+def print_board():
     """Prints the board to the console"""
-    for r in  range(len(brd)):
+    global board
+
+    for r in  range(9):
         if r % 3 == 0 and r != 0:
             print("- - - - - - - - - - - ")
 
-        for c in range(len(brd[0])):
+        for e in range(9):
             # Place a line after the 3rd number in each row
-            if c % 3 == 0 and c != 0:
+            if e % 3 == 0 and e != 0:
                 print("| ", end = "")
             # Check if its the last number in row, print the number and start new line
-            if c == 8:
-                print(brd[r][c])
+            if e == 8:
+                print(board[r][e])
             # Print number
             else:
-                print(str(brd[r][c]) + " ", end = "")
+                print(str(board[r][e]) + " ", end = "")
 
 
-def find_empty(brd):
-    """Finds empty spaces in the sudoku puzzle and returns position"""
-    for r in range(len(brd)):
-        for c in range(len(brd[0])):
-            if brd[r][c] == 0:
-                return (r, c) # (Row, Column)
-
-def validate(brd, num, pos):
+def validate(y, x, num):
     """Validates a number in a row"""
+    global board
+
     # Check row
-    for i in range(len(brd[0])):
-        if brd[pos[0][i]] == num and pos[1] != i:
+    for i in range(9):
+        if board[y][i] == num:
             return False
 
     # Check column
-    for i in range(len(brd)):
-        if brd[i][pos[0]] == num and pos[0] != i:
+    for i in range(9):
+        if board[i][x] == num:
             return False
 
-    # Check area
-    
+    # Check square
+    x0 = (x // 3) * 3
+    y0 = (y // 3) * 3
+
+    for i in range(3):
+        for j in range(3):
+            if board[y0 + i][x0 + j] == num:
+                return False
+
+    return True
+
+def solve():
+    """Solves puzzle using backtracking"""
+    global board
+
+    for y in range(9):
+        for x in range(9):
+            if board[y][x] == 0:
+                for n in range(1, 10):
+                    if validate(y, x, n):
+                        board[y][x] = n
+                        solve()
+                        board[y][x] = 0
+                return
+    print("Solution")
+    print_board()
+    input("Press enter for more solutions")
 
 
-
-
-print_board(board)
+print("Original")
+print_board()
+solve()
