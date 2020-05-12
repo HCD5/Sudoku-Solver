@@ -70,7 +70,6 @@ def solve():
                 return
     print("Solution")
     print_board()
-    input("Press enter for more solutions")
 
 
 print("Original")
